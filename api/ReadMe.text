@@ -1,0 +1,7 @@
+# *** admin create code for 
+{
+  "username": "adminuser",
+  "email": "admin@example.com",
+  "password": "strongpassword123"
+}
+
