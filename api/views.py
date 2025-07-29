@@ -499,12 +499,10 @@ class MissionVisionPageView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-# --- ================================ Products Add =========================== --- #
+# --- ================================ Products Add ===================================  #
 class ProductCreateView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = []  # No authentication
+    permission_classes = []
 
     def post(self, request):
         serializer = ProductsAddSerializer(data=request.data)
@@ -512,6 +510,31 @@ class ProductCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# class ProductCreateView(APIView):
+#     parser_classes = (MultiPartParser, FormParser)
+#     permission_classes = []  # No authentication
+
+#     def post(self, request):
+#         serializer = ProductsAddSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# --- ================= Home Page show Product List ==================================== #
+class ActiveProductListView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        products = ProductsAdd.objects.filter(product_status=True).order_by('-id')
+        serializer = ProductsAddSerializer(products, many=True)
+        return Response(serializer.data)
+
+
+
 
 
 # ==================== views.py (Product List + Edit + Delete) ========================== #
@@ -522,7 +545,6 @@ class ProductListView(APIView):
         products = ProductsAdd.objects.all().order_by('-id')
         serializer = ProductsAddSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class ProductDetailView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -750,9 +772,16 @@ class SliderView(APIView):
     permission_classes = []  # No authentication
 
     def get(self, request):
-        sliders = Slider.objects.all()
-        serializer = SliderSerializer(sliders, many=True)
+        active_sliders = Slider.objects.filter(status=True).order_by('-id') 
+        # sliders = Slider.objects.filter(status=True).order_by('-id')
+        # active_sliders = Slider.objects.filter(status=True)
+        serializer = SliderSerializer(active_sliders, many=True)
         return Response(serializer.data)
+
+    # def get(self, request):
+    #     sliders = Slider.objects.all()
+    #     serializer = SliderSerializer(sliders, many=True)
+    #     return Response(serializer.data)
 
     def post(self, request):
         serializer = SliderSerializer(data=request.data)

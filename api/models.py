@@ -105,6 +105,17 @@ class SliderBelowSection(models.Model):
         verbose_name = "Slider Below Section"
         verbose_name_plural = "Slider Below Section"
 
+
+
+
+
+
+
+
+
+
+
+
 # --- Footer Section --- #
 class Footer(models.Model):
     footer_text = models.TextField()
@@ -226,14 +237,13 @@ class MissionVisionPage(models.Model):
 
 
 # --- Products Add --- #
+
 class ProductsAdd(models.Model):
     product_name = models.CharField(max_length=255)
     product_code = models.CharField(max_length=100)
     product_description = models.TextField()
-    # product_img = models.ImageField(upload_to='product_images/')
-    # product_img = models.ImageField(default='delta_header_logo.png', blank=True,  upload_to='product_images/')
     product_img = models.ImageField(default='delta_header_logo.png', blank=True)
-    product_status = models.CharField(max_length=255, default="false")
+    product_status = models.BooleanField(default=False)  # Use BooleanField instead of CharField
 
     def __str__(self):
         return self.product_name
@@ -241,6 +251,26 @@ class ProductsAdd(models.Model):
     class Meta:
         verbose_name = "Products Add"
         verbose_name_plural = "Product Add"
+
+
+# class ProductsAdd(models.Model):
+#     product_name = models.CharField(max_length=255)
+#     product_code = models.CharField(max_length=100)
+#     product_description = models.TextField()
+#     # product_img = models.ImageField(upload_to='product_images/')
+#     # product_img = models.ImageField(default='delta_header_logo.png', blank=True,  upload_to='product_images/')
+#     product_img = models.ImageField(default='delta_header_logo.png', blank=True)
+#     product_status = models.CharField(max_length=255, default="false")
+
+#     def __str__(self):
+#         return self.product_name
+
+#     class Meta:
+#         verbose_name = "Products Add"
+#         verbose_name_plural = "Product Add"
+
+
+
 
 
 # --- Product List Show --- #
@@ -466,13 +496,52 @@ class Slider(models.Model):
     slider_name = models.CharField(max_length=255)
     slider_description = models.TextField()
     slider_img = models.ImageField(upload_to='media/sliders/')
+    status = models.BooleanField(default=False)  # Can be active/inactive
 
     def __str__(self):
-        return self.slider_name
+        return f"{self.slider_name} (ID: {self.id})"
 
-    class Meta:
-        verbose_name = "Slider"
-        verbose_name_plural = "Sliders"
+
+
+
+
+# class Slider(models.Model):
+#     slider_name = models.CharField(max_length=255)
+#     slider_description = models.TextField()
+#     slider_img = models.ImageField(upload_to='media/sliders/')
+#     status = models.BooleanField(default=False)  # Active/Inactive
+
+#     def save(self, *args, **kwargs):
+#         if self.status:
+#             # Set all other sliders to inactive
+#             Slider.objects.exclude(pk=self.pk).update(status=False)
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.slider_name
+
+
+
+
+
+
+
+# class Slider(models.Model):
+#     slider_name = models.CharField(max_length=255)
+#     slider_description = models.TextField()
+#     slider_img = models.ImageField(upload_to='media/sliders/')
+
+#     def __str__(self):
+#         return self.slider_name
+
+#     class Meta:
+#         verbose_name = "Slider"
+#         verbose_name_plural = "Sliders"
+
+
+
+
+
 
 # --- Board Of Director --- #
 class BoardOfDirector(models.Model):

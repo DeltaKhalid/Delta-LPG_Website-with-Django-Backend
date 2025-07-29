@@ -20,6 +20,7 @@ from .views import (
     ProductListView,
     ProductDetailView,
     ProductsAddDetailView,
+    ActiveProductListView,
     ContactPageView,
     DistributionPageView,
     CylinderPageView,
@@ -61,15 +62,17 @@ urlpatterns = [
 
     # path('product-add/', ProductsAddView.as_view(), name='product-add'),
     path('product-add/', ProductCreateView.as_view(), name='product-add'),
-
     path('product-list/', ProductListView.as_view(), name='product-list'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<int:pk>/', ProductsAddDetailView.as_view(), name='product-detail'),
+    path('active-product-list/', ActiveProductListView.as_view(), name='active-product-list'),
+
     path('contact-page/', ContactPageView.as_view(), name='contact-page'),
     path('distribution-page/', DistributionPageView.as_view(), name='distribution-page'),
     path('cylinder-page/', CylinderPageView.as_view(), name='cylinder-page'),
     path('bulk-page/', BulkPageView.as_view(), name='bulk-page'),
     path('sliders/', SliderView.as_view(), name='slider-crud'),
+
     # --- Board of Directors --- #
     path('board-of-directors/', BoardOfDirectorListCreateView.as_view(), name='board_of_directors'),
     path('board-of-directors/<int:pk>/', BoardOfDirectorDetailView.as_view(), name='board_of_director_detail'),

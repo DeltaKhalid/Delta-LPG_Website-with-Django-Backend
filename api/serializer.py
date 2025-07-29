@@ -112,7 +112,16 @@ class MissionVisionPageSerializer(serializers.ModelSerializer):
 class ProductsAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductsAdd
-        fields = ['id', 'product_name', 'product_code', 'product_description','product_status', 'product_img']
+        fields = ['id', 'product_name', 'product_code', 'product_description', 'product_status', 'product_img']
+
+
+
+# class ProductsAddSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProductsAdd
+#         fields = ['id', 'product_name', 'product_code', 'product_description','product_status', 'product_img']
+
+
 
 # --- Contact Page --- #
 class ContactPageSerializer(serializers.ModelSerializer):
@@ -163,7 +172,24 @@ class BulkPageSerializer(serializers.ModelSerializer):
 class SliderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slider
-        fields = ['id', 'slider_name', 'slider_description', 'slider_img']
+        fields = ['id', 'slider_name', 'slider_description', 'slider_img', 'status']
+
+
+# class SliderSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Slider
+#         fields = ['id', 'slider_name', 'slider_description', 'slider_img', 'status']
+
+
+
+
+# class SliderSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Slider
+#         fields = ['id', 'slider_name', 'slider_description', 'slider_img']
+
+
+
 
 # --- Board of Directors --- #
 class BoardOfDirectorSerializer(serializers.ModelSerializer):

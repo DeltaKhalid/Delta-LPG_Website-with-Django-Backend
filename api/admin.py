@@ -191,7 +191,8 @@ class MissionVisionPageAdmin(admin.ModelAdmin):
 # --- Products Add --- #
 @admin.register(ProductsAdd)
 class ProductsAddAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'product_code', 'short_description','product_status', 'image_tag')
+    list_display = ('id', 'product_name', 'product_code', 'short_description', 'product_status', 'image_tag')
+    list_editable = ('product_status',)  # Editable status in list view
     search_fields = ('product_name', 'product_code')
     readonly_fields = ('image_tag',)
 
@@ -204,6 +205,26 @@ class ProductsAddAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" width="60" height="60" style="object-fit:cover;"/>', obj.product_img.url)
         return "-"
     image_tag.short_description = 'Image Preview'
+
+
+# @admin.register(ProductsAdd)
+# class ProductsAddAdmin(admin.ModelAdmin):
+#     list_display = ('product_name', 'product_code', 'short_description','product_status', 'image_tag')
+#     search_fields = ('product_name', 'product_code')
+#     readonly_fields = ('image_tag',)
+
+#     def short_description(self, obj):
+#         return (obj.product_description[:50] + "...") if len(obj.product_description) > 50 else obj.product_description
+#     short_description.short_description = "Description"
+
+#     def image_tag(self, obj):
+#         if obj.product_img:
+#             return format_html('<img src="{}" width="60" height="60" style="object-fit:cover;"/>', obj.product_img.url)
+#         return "-"
+#     image_tag.short_description = 'Image Preview'
+
+
+
 
 
 # --- Product List --- #
@@ -333,7 +354,22 @@ class BulkPageAdmin(admin.ModelAdmin):
 # --- Slider --- #
 @admin.register(Slider)
 class SliderAdmin(admin.ModelAdmin):
-    list_display = ('slider_name', 'slider_description')
+    list_display = ('id', 'slider_name', 'slider_description', 'status')
+    list_editable = ('status',)
+
+
+# @admin.register(Slider)
+# class SliderAdmin(admin.ModelAdmin):
+#     list_display = ('slider_name', 'slider_description', 'status')
+#     list_editable = ('status',)
+
+
+# @admin.register(Slider)
+# class SliderAdmin(admin.ModelAdmin):
+#     list_display = ('slider_name', 'slider_description')
+
+
+
 
 # --- Board of Directors --- #
 @admin.register(BoardOfDirector)
