@@ -31,6 +31,7 @@ class AboutUsPageContent(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     img_link = models.ImageField(upload_to='about_us/', null=True, blank=True)
+    dist_map_link = models.ImageField(upload_to='about_us/', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -268,17 +269,37 @@ class ProductsAddList(ProductsAdd):
 #         verbose_name_plural = "Product Add"
 
 
-# --- Contact Page --- #
+# ------------------------------------- Contact Page ------------------------------------------- #
+from django.db import models
+from django.core.exceptions import ValidationError
+
 class ContactPage(models.Model):
-    phone_number_1 = models.CharField("Phone Number 01", max_length=20)
-    phone_number_2 = models.CharField("Phone Number 02", max_length=20, blank=True, null=True)
-    email_1 = models.CharField("Email 01", max_length=100)
-    email_2 = models.CharField("Email 02", max_length=100, blank=True, null=True)
-    address = models.TextField("Address")
-    map_link = models.TextField("Map Link")  # Just plain text, no HTML widget
+    # Office 01
+    office_1_name = models.CharField(max_length=255, default="Not Provided")
+    office_1_address = models.TextField(default="Not Provided")
+    office_1_phone_1 = models.CharField(max_length=20, default="N/A")
+    office_1_phone_2 = models.CharField(max_length=20, blank=True, null=True)
+    office_1_email = models.EmailField(default="not-provided@example.com")
+    office_1_map = models.TextField(default="N/A")
+
+    # Office 02
+    office_2_name = models.CharField(max_length=255, default="Not Provided")
+    office_2_address = models.TextField(default="Not Provided")
+    office_2_phone_1 = models.CharField(max_length=20, default="N/A")
+    office_2_phone_2 = models.CharField(max_length=20, blank=True, null=True)
+    office_2_email = models.EmailField(default="not-provided@example.com")
+    office_2_map = models.TextField(default="N/A")
+
+    # Office 03
+    office_3_name = models.CharField(max_length=255, default="Not Provided")
+    office_3_address = models.TextField(default="Not Provided")
+    office_3_phone_1 = models.CharField(max_length=20, default="N/A")
+    office_3_phone_2 = models.CharField(max_length=20, blank=True, null=True)
+    office_3_email = models.EmailField(default="not-provided@example.com")
+    office_3_map = models.TextField(default="N/A")
 
     def __str__(self):
-        return self.email_1
+        return self.office_1_email
 
     def clean(self):
         if ContactPage.objects.exists() and not self.pk:
@@ -287,6 +308,32 @@ class ContactPage(models.Model):
     class Meta:
         verbose_name = "Contact Page"
         verbose_name_plural = "Contact Page"
+
+
+
+
+
+# class ContactPage(models.Model):
+#     phone_number_1 = models.CharField("Phone Number 01", max_length=20)
+#     phone_number_2 = models.CharField("Phone Number 02", max_length=20, blank=True, null=True)
+#     email_1 = models.CharField("Email 01", max_length=100)
+#     email_2 = models.CharField("Email 02", max_length=100, blank=True, null=True)
+#     address = models.TextField("Address")
+#     map_link = models.TextField("Map Link")  # Just plain text, no HTML widget
+
+#     def __str__(self):
+#         return self.email_1
+
+#     def clean(self):
+#         if ContactPage.objects.exists() and not self.pk:
+#             raise ValidationError("Only one ContactPage instance is allowed.")
+
+#     class Meta:
+#         verbose_name = "Contact Page"
+#         verbose_name_plural = "Contact Page"
+
+
+
 
 # class ContactPage(models.Model):
 #     phone_number_1 = models.CharField(max_length=20)

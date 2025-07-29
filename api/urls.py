@@ -44,6 +44,7 @@ urlpatterns = [
     path('about-us/', AboutUsView.as_view(), name='about-us'),
 
     # About us page content
+    path('about-us-page/', AboutUsPageView.as_view(), name='about-us-page'),
     path('about-us-page-content/', AboutUsPageContentView.as_view(), name='about-us-page-content'),
     path('about-us-page-content-with-img/', AboutUsPageContentWithImgView.as_view(), name='about-us-page-content-with-img'),
 
@@ -54,7 +55,7 @@ urlpatterns = [
     path('home-about-us/', HomeAboutUsView.as_view(), name='home-about-us'),
     path('home-products/', HomeProductsView.as_view(), name='home-products'),
     path('home-promotional-video/', HomePromotionalVideoView.as_view(), name='home-promotional-video'),
-    path('about-us-page/', AboutUsPageView.as_view(), name='about-us-page'),
+    
     
     path('mission-vision/', MissionVisionPageView.as_view(), name='mission-vision'),
 

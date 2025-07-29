@@ -128,7 +128,7 @@ class AboutUsView(APIView):
     
 # --- About us Page Content ---# 
 class AboutUsPageContentView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = []
 
     def get(self, request):
         about = AboutUs.objects.first()
@@ -168,7 +168,7 @@ class AboutUsPageContentView(APIView):
 
 # --- About Us Page Content with Image --- #
 class AboutUsPageContentWithImgView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = []
 
     def get(self, request):
         about = AboutUsPageContent.objects.first()
@@ -588,12 +588,12 @@ class ProductsAddDetailView(APIView):
 
 # --- Contact Page --- #
 class ContactPageView(APIView):
-    permission_classes = []  # No authentication
+    permission_classes = []  # No authentication required
 
     def get(self, request):
         contact = ContactPage.objects.first()
         if not contact:
-            return Response({"message": "No contact page content found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "No contact page data found."}, status=status.HTTP_404_NOT_FOUND)
         serializer = ContactPageSerializer(contact)
         return Response(serializer.data)
 
@@ -615,6 +615,43 @@ class ContactPageView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# class ContactPageView(APIView):
+#     permission_classes = []  # No authentication
+
+#     def get(self, request):
+#         contact = ContactPage.objects.first()
+#         if not contact:
+#             return Response({"message": "No contact page content found."}, status=status.HTTP_404_NOT_FOUND)
+#         serializer = ContactPageSerializer(contact)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         if ContactPage.objects.exists():
+#             return Response({"message": "Contact page already exists. Use PUT to update."}, status=status.HTTP_400_BAD_REQUEST)
+#         serializer = ContactPageSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def put(self, request):
+#         contact = ContactPage.objects.first()
+#         if not contact:
+#             return Response({"message": "No content to update. Use POST to create."}, status=status.HTTP_404_NOT_FOUND)
+#         serializer = ContactPageSerializer(contact, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
 
 # --- Distribution Page --- #
 class DistributionPageView(APIView):

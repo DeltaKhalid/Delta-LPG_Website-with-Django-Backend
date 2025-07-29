@@ -227,20 +227,42 @@ class ProductsAddListAdmin(admin.ModelAdmin):
 # --- Contact Page --- #
 @admin.register(ContactPage)
 class ContactPageAdmin(admin.ModelAdmin):
-    list_display = ('phone_number_1', 'email_1')
+    list_display = ('office_1_name', 'office_1_email')
 
     def has_add_permission(self, request):
         # Block add if there's already one record
         return not ContactPage.objects.exists()
 
     def changelist_view(self, request, extra_context=None):
-        # If only one ContactPage object exists, redirect to its change page
         obj = ContactPage.objects.first()
         if obj:
-            return redirect(
-                reverse("admin:api_contactpage_change", args=(obj.id,))
-            )
+            return redirect(reverse("admin:api_contactpage_change", args=(obj.id,)))
         return super().changelist_view(request, extra_context=extra_context)
+
+
+
+
+
+# @admin.register(ContactPage)
+# class ContactPageAdmin(admin.ModelAdmin):
+#     list_display = ('phone_number_1', 'email_1')
+
+#     def has_add_permission(self, request):
+#         # Block add if there's already one record
+#         return not ContactPage.objects.exists()
+
+#     def changelist_view(self, request, extra_context=None):
+#         # If only one ContactPage object exists, redirect to its change page
+#         obj = ContactPage.objects.first()
+#         if obj:
+#             return redirect(
+#                 reverse("admin:api_contactpage_change", args=(obj.id,))
+#             )
+#         return super().changelist_view(request, extra_context=extra_context)
+
+
+
+
 
 # @admin.register(ContactPage)
 # class ContactPageAdmin(admin.ModelAdmin):

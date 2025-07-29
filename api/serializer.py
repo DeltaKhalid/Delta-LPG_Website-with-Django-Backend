@@ -40,13 +40,13 @@ class AboutUsSerializer(serializers.ModelSerializer):
         fields = ['id', 'content']
 
 
-    # --- About us page content 
+# --- About us page content 
 class AboutUsPageContentSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = AboutUsPageContent
-        fields = ['id', 'title', 'sub_title', 'content', 'created_by', 'created_at', 'img_link']
+        fields = ['id', 'title', 'sub_title', 'content', 'created_by', 'created_at', 'img_link', 'dist_map_link']
 
 # new About us page content
 class AboutUsPageContentWithImgSerializer(serializers.ModelSerializer):
@@ -119,6 +119,17 @@ class ContactPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactPage
         fields = '__all__'
+
+
+
+
+# class ContactPageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ContactPage
+#         fields = '__all__'
+
+
+
 
 # --- Distribution Page --- #
 class DistributionPageSerializer(serializers.ModelSerializer):
