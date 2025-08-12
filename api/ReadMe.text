@@ -4,4 +4,8 @@
   "email": "admin@example.com",
   "password": "strongpassword123"
 }
+ 
+# Full Link should be -> http://127.0.0.1:8000/api/users/
+# Admin Dashboard link -> http://127.0.0.1:8000/admin/
+# Admin -> user : admin -> pass : 123456
 

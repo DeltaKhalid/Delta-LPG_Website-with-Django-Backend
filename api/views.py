@@ -529,7 +529,8 @@ class ActiveProductListView(APIView):
     permission_classes = []
 
     def get(self, request):
-        products = ProductsAdd.objects.filter(product_status=True).order_by('-id')
+        products = ProductsAdd.objects.filter(product_status=True)
+        # products = ProductsAdd.objects.filter(product_status=True).order_by('-id')
         serializer = ProductsAddSerializer(products, many=True)
         return Response(serializer.data)
 
