@@ -30,7 +30,13 @@ from .views import (
     BoardOfDirectorDetailView,
     ReticulationPageView,
     FaqAddView,
+    CylinderLPGasProductsAddListCreateView,
+    CylinderLPGasProductsAddDetailView,
+    OrderCreateView,
+    OrderListView
 )
+
+
 
 
 # Full Link should be -> http://127.0.0.1:8000/api/users/
@@ -66,6 +72,15 @@ urlpatterns = [
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<int:pk>/', ProductsAddDetailView.as_view(), name='product-detail'),
     path('active-product-list/', ActiveProductListView.as_view(), name='active-product-list'),
+
+    path('cylinder-lpg-products/', CylinderLPGasProductsAddListCreateView.as_view(), name='cylinder-lpg-products-list-create'),
+    path('cylinder-lpg-products/<int:pk>/', CylinderLPGasProductsAddDetailView.as_view(), name='cylinder-lpg-products-detail'),
+
+    #  --- Product Order --- #
+    path('order-create/', OrderCreateView.as_view(), name='order-create'),
+    path('order-list/', OrderListView.as_view(), name='order-list'),  # optional
+
+
 
     path('contact-page/', ContactPageView.as_view(), name='contact-page'),
     path('distribution-page/', DistributionPageView.as_view(), name='distribution-page'),

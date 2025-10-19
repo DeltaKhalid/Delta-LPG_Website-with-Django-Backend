@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 
+from decimal import Decimal
+from django.db import models
+from django.core.exceptions import ValidationError
+
 # from .models import AboutUs, AboutUsPageContent, AboutUsPageContentWithImg, HeaderInfo, SliderBelowSection, Footer, HomeAboutUs, HomeProducts, HomePromotionalVideo
 from .models import (
     AboutUs,
@@ -29,6 +33,9 @@ from .models import (
     BoardOfDirector,
     ReticulationPage,
     FaqAdd,
+    CylinderLPGasProductsAdd,
+    SalesOrder, 
+    SalesOrderItem,
 )
 
 
@@ -398,6 +405,90 @@ class ReticulationPageAdmin(admin.ModelAdmin):
 class FaqAddAdmin(admin.ModelAdmin):
     list_display = ('id', 'faq_question')
     search_fields = ('faq_question',)
+
+# ---------------------------------------------  Cylinder Gas Products List API  --------------------------------- #
+@admin.register(CylinderLPGasProductsAdd)
+class CylinderLPGasProductsAddAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product_name', 'product_code', 'created_at')
+    search_fields = ('product_name', 'product_code')
+    list_per_page = 20
+
+# --------------------------------------------- Product Order of Delta LP Gas ------------------------------------ #
+# Inline: show order items inside order
+# Inline: show order items inside order
+class SalesOrderItemInline(admin.TabularInline):
+    model = SalesOrderItem
+    extra = 0
+    fields = (
+        "product_name",
+        "product_price",
+        "quantity",
+        "total_price",
+        "delivery_quantity",
+        "delivery_status",
+    )
+    # ✅ Make product_name, product_price, quantity read-only in admin
+    readonly_fields = (
+        "product_name",
+        "product_price",
+        "quantity",
+        "total_price",
+    )
+
+
+# SalesOrder Admin
+@admin.register(SalesOrder)
+class SalesOrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "customer_name",
+        "customer_phn",
+        "customer_add",
+        "created_at",
+        "order_status",  # ✅ new column
+    )
+    search_fields = ("customer_name", "customer_phn")
+    list_filter = ("created_at",)
+    inlines = [SalesOrderItemInline]
+
+    # ✅ Make customer details read-only
+    readonly_fields = ("customer_name", "customer_phn", "customer_add", "created_at")
+
+    # --- New method for Order Status ---
+    def order_status(self, obj):
+        # If any product is "Pending" -> Pending; otherwise Done
+        if obj.products.filter(delivery_status="Pending").exists():
+            return "Pending"
+        return "Done"
+
+    order_status.short_description = "Order Status"
+
+
+# SalesOrderItem Admin
+@admin.register(SalesOrderItem)
+class SalesOrderItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "order_id", "product_name", "product_price", "quantity",
+        "total_price", "delivery_quantity", "delivery_status"
+    )
+    search_fields = ("product_name",)
+    list_filter = ("delivery_status",)
+    # ✅ Read-only on the standalone item admin too
+    readonly_fields = ("product_name", "product_price", "quantity", "total_price")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

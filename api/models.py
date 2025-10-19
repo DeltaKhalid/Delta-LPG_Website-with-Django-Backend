@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 
 # Create your models here.
@@ -596,6 +597,83 @@ class FaqAdd(models.Model):
     class Meta:
         verbose_name = "FAQ"
         verbose_name_plural = "FAQs"
+
+# --- Cylinder Gas Products List API --- #
+class CylinderLPGasProductsAdd(models.Model):
+    product_name = models.CharField(max_length=255)
+    product_code = models.CharField(max_length=100)
+    product_price = models.CharField(max_length=100)
+    product_description = models.TextField(blank=True, null=True)
+    product_image = models.ImageField(upload_to='cylinder_lpg_products/', blank=True, null=True)
+    product_image_2 = models.ImageField(upload_to='cylinder_lpg_products/', blank=True, null=True)
+    product_image_3 = models.ImageField(upload_to='cylinder_lpg_products/', blank=True, null=True)
+    product_image_4 = models.ImageField(upload_to='cylinder_lpg_products/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.product_name} ({self.product_code})"
+
+    class Meta:
+        verbose_name = "Cylinder LPG Product"
+        verbose_name_plural = "Cylinder LPG Products"
+
+# -------------------------------------------- Product Order of Delta LP Gas -------------------------------------- #
+# --- Sales Order Models --- #
+class SalesOrder(models.Model):
+    customer_name = models.CharField(max_length=255)
+    customer_phn = models.CharField(max_length=30)
+    customer_add = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)   # ✅ auto date & time
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.customer_name}"
+
+
+class SalesOrderItem(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Done", "Done"),
+    ]
+
+    order = models.ForeignKey(SalesOrder, related_name="products", on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=255)
+    product_price = models.DecimalField(max_digits=12, decimal_places=2)
+    quantity = models.PositiveIntegerField()
+    total_price = models.DecimalField(max_digits=12, decimal_places=2, editable=False)
+
+    # ✅ new fields
+    delivery_quantity = models.PositiveIntegerField(default=0)
+    delivery_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+
+    def save(self, *args, **kwargs):
+        price = Decimal(str(self.product_price)) if self.product_price else Decimal("0")
+        qty = Decimal(str(self.quantity or 0))
+        self.total_price = price * qty
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product_name} x {self.quantity} (Order #{self.order_id})"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

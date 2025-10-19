@@ -9,6 +9,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 
+
 # from .models import User, AboutUs, AboutUsPageContent, AboutUsPageContentWithImg, HeaderInfo, SliderBelowSection, Footer, HomeAboutUs, HomeProducts, HomePromotionalVideo
 # from .serializer import UserSerializer, AboutUsSerializer, AboutUsPageContentSerializer, AboutUsPageContentWithImgSerializer, HeaderInfoSerializer, SliderBelowSectionSerializer, FooterSerializer, HomeAboutUsSerializer, HomeProductsSerializer, HomePromotionalVideoSerializer
 # from rest_framework.response import Response
@@ -37,6 +38,8 @@ from .models import (
     BoardOfDirector,
     ReticulationPage,
     FaqAdd,
+    CylinderLPGasProductsAdd,
+    SalesOrder,
 )
 from .serializer import (
     UserSerializer,
@@ -60,7 +63,16 @@ from .serializer import (
     BoardOfDirectorSerializer,
     ReticulationPageSerializer,
     FaqAddSerializer,
+    CylinderLPGasProductsAddSerializer,
+    SalesOrderCreateSerializer,
+    SalesOrderListSerializer,
 )
+
+
+# --- Helper to build the Postman-style wrapper --- #
+def api_response(data, status_code=status.HTTP_200_OK, success=True):
+    # Ensure `status_code` is both in wrapper and used as HTTP status
+    return Response({"status": success, "status_code": status_code, "data": data}, status=status_code)
 
 
 
@@ -922,6 +934,115 @@ class FaqAddView(APIView):
             return Response({"message": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
         faq.delete()
         return Response({"message": "FAQ deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+# --- Cylinder Gas Products List API  --- #
+class CylinderLPGasProductsAddListCreateView(APIView):
+    """
+    GET  -> list all products (returns data array)
+    POST -> create a new product (multipart/form-data for image)
+    """
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        products = CylinderLPGasProductsAdd.objects.all().order_by('-id')
+        serializer = CylinderLPGasProductsAddSerializer(products, many=True, context={'request': request})
+        return api_response(serializer.data, status_code=status.HTTP_200_OK, success=True)
+
+    def post(self, request):
+        serializer = CylinderLPGasProductsAddSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return api_response(serializer.data, status_code=status.HTTP_201_CREATED, success=True)
+        return api_response(serializer.errors, status_code=status.HTTP_400_BAD_REQUEST, success=False)
+
+
+class CylinderLPGasProductsAddDetailView(APIView):
+    """
+    GET    -> retrieve single product
+    PUT    -> update product (partial allowed)
+    DELETE -> delete product
+    """
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self, pk):
+        try:
+            return CylinderLPGasProductsAdd.objects.get(pk=pk)
+        except CylinderLPGasProductsAdd.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        obj = self.get_object(pk)
+        if not obj:
+            return api_response([], status_code=status.HTTP_404_NOT_FOUND, success=False)
+        serializer = CylinderLPGasProductsAddSerializer(obj, context={'request': request})
+        return api_response(serializer.data, status_code=status.HTTP_200_OK, success=True)
+
+    def put(self, request, pk):
+        obj = self.get_object(pk)
+        if not obj:
+            return api_response([], status_code=status.HTTP_404_NOT_FOUND, success=False)
+        serializer = CylinderLPGasProductsAddSerializer(obj, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return api_response(serializer.data, status_code=status.HTTP_200_OK, success=True)
+        return api_response(serializer.errors, status_code=status.HTTP_400_BAD_REQUEST, success=False)
+
+    def delete(self, request, pk):
+        obj = self.get_object(pk)
+        if not obj:
+            return api_response([], status_code=status.HTTP_404_NOT_FOUND, success=False)
+        obj.delete()
+        return api_response({"message": "Deleted successfully"}, status_code=status.HTTP_200_OK, success=True)
+
+# --- Product Order of Delta LP Gas --- #
+class OrderCreateView(APIView):
+    # Public endpoint to place orders
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = SalesOrderCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            data = SalesOrderCreateSerializer(order).data  # uses custom to_representation
+            return Response(
+                {
+                    "message": "Sales order created successfully.",
+                    "status": True,
+                    "status_code": 201,
+                    "data": data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {
+                "message": "Validation error.",
+                "status": False,
+                "status_code": 400,
+                "errors": serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class OrderListView(APIView):
+    # Optional: protect listing for admin/internal use
+    permission_classes = []
+
+    def get(self, request):
+        qs = SalesOrder.objects.order_by("-created_at")
+        data = SalesOrderListSerializer(qs, many=True).data
+        return Response(
+            {
+                "message": "Sales orders fetched successfully.",
+                "status": True,
+                "status_code": 200,
+                "data": data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+
 
 
     

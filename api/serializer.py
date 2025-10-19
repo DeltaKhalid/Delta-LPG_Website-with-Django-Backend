@@ -23,6 +23,9 @@ from .models import (
     BoardOfDirector,
     ReticulationPage,
     FaqAdd,
+    CylinderLPGasProductsAdd,
+    SalesOrder, 
+    SalesOrderItem,
 )
 
 
@@ -209,5 +212,80 @@ class FaqAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = FaqAdd
         fields = ['id', 'faq_question', 'faq_answer']
+    
+# --- Cylinder Gas Products List API --- #
+class CylinderLPGasProductsAddSerializer(serializers.ModelSerializer):
+    product_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CylinderLPGasProductsAdd
+        fields = [
+            'id', 'product_name', 'product_code', 'product_price', 'product_description', 
+            'product_image', 'product_image_2', 'product_image_3', 'product_image_4',
+            'created_at', 'updated_at'
+        ]
+
+    def get_product_image(self, obj):
+        return obj.product_image.url if obj.product_image else None
+
+
+# class CylinderLPGasProductsAddSerializer(serializers.ModelSerializer):
+#     # Accept image uploads (optional)
+#     product_image = serializers.ImageField(required=False, allow_null=True)
+
+#     class Meta:
+#         model = CylinderLPGasProductsAdd
+#         fields = [
+#             'id', 'product_name', 'product_code', 'product_description', 'product_image', 'created_at', 'updated_at']
+
+
+
+
+# --- Product Order of Delta LP Gas --- #
+class SalesOrderItemSerializer(serializers.ModelSerializer):
+    total_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = SalesOrderItem
+        fields = [
+            "product_name",
+            "product_price",
+            "quantity",
+            "total_price",
+            "delivery_quantity",   # ✅ new
+            "delivery_status",     # ✅ new
+        ]
+        read_only_fields = ("delivery_quantity", "delivery_status")  # user cannot set, only admin
+
+
+class SalesOrderCreateSerializer(serializers.ModelSerializer):
+    products = SalesOrderItemSerializer(many=True)
+
+    class Meta:
+        model = SalesOrder
+        fields = ["id", "customer_name", "customer_phn", "customer_add", "products"]
+
+    def create(self, validated_data):
+        products_data = validated_data.pop("products", [])
+        order = SalesOrder.objects.create(**validated_data)
+        for item in products_data:
+            SalesOrderItem.objects.create(order=order, **item)
+        return order
+
+
+class SalesOrderListSerializer(serializers.ModelSerializer):
+    # For listing with created_at (date & time)
+    products = SalesOrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SalesOrder
+        fields = [
+            "id",
+            "customer_name",
+            "customer_phn",
+            "customer_add",
+            "created_at",
+            "products",
+        ]
 
 
